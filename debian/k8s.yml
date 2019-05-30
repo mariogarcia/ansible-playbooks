@@ -1,5 +1,5 @@
 ---
-- hosts: mastero
+- hosts: master
   vars_prompt:
 
     - name: master_ip
