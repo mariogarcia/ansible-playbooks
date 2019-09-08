@@ -45,7 +45,7 @@
     repo: "{{ item }}"
     state: present
   with_items:
-    - deb https://download.docker.com/linux/debian stretch stable
+    - deb https://download.docker.com/linux/debian buster stable
     - deb https://apt.kubernetes.io/ kubernetes-xenial main
 
 - name: install docker and k8s
