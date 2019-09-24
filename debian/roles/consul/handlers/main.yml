@@ -1,0 +1,6 @@
+---
+- name: start consul agent
+  become: true
+  service:
+    name: consul
+    state: started

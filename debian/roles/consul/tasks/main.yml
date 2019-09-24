@@ -1,0 +1,73 @@
+- name: download
+  get_url:
+    url: https://releases.hashicorp.com/consul/1.6.1/consul_1.6.1_linux_amd64.zip
+    dest: /tmp/
+
+- name: unzip library
+  apt:
+    name: ['unzip']
+    state: present
+
+- name: create consul group
+  group:
+    name: consul
+
+- name: create consul user
+  user:
+    name: consul
+    create_home: no
+    group: consul
+
+- name: unzip consul
+  unarchive:
+    src: /tmp/consul_1.6.1_linux_amd64.zip
+    dest: /tmp/
+    remote_src: yes
+
+- name: copy binary to /usr/local/bin
+  copy:
+    src: /tmp/consul
+    dest: /usr/local/bin/consul
+    owner: consul
+    group: consul
+    mode: '755'
+    remote_src: yes
+
+- name: create consul config dir
+  file:
+    path: /etc/consul.d
+    state: directory
+    owner: consul
+    group: consul
+    recurse: yes
+
+- name: create consul data dir
+  file:
+    path: /opt/consul
+    state: directory
+    owner: consul
+    group: consul
+    recurse: yes
+
+- name: create consul [general] configuration
+  template:
+    src: consul.hcl
+    dest: /etc/consul.d/
+    owner: consul
+    group: consul
+    mode: '640'
+
+- name: create consul [server] configuration
+  template:
+    src: server.hcl
+    dest: /etc/consul.d/
+    owner: consul
+    group: consul
+    mode: '640'
+
+- name: create consul service
+  template:
+    src: consul.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
