@@ -49,7 +49,7 @@
     group: consul
     recurse: yes
 
-- name: create consul [general] configuration
+- name: create consul configuration
   template:
     src: consul.hcl
     dest: /etc/consul.d/
@@ -57,13 +57,23 @@
     group: consul
     mode: '640'
 
-- name: create consul [server] configuration
+- name: create consul server configuration [leader]
   template:
-    src: server.hcl
-    dest: /etc/consul.d/
+    src: leader.hcl
+    dest: /etc/consul.d/server.hcl
     owner: consul
     group: consul
     mode: '640'
+  when: consul_role == "leader"
+
+- name: create consul server configuration [follower]
+  template:
+    src: follower.hcl
+    dest: /etc/consul.d/server.hcl
+    owner: consul
+    group: consul
+    mode: '640'
+  when: consul_role == "follower"
 
 - name: create consul service
   template:
@@ -71,3 +81,5 @@
     dest: /etc/systemd/system/
     owner: root
     group: root
+  notify:
+    - restart consul

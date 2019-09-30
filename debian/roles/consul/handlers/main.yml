@@ -1,5 +1,5 @@
 ---
-- name: start consul agent
+- name: restart consul
   become: true
   service:
     name: consul
