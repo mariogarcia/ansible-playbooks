@@ -5,5 +5,5 @@
       prompt: "Insert the username"
       private: no
   roles:
-    - vault
+    - hashicorp-vault
   become: true

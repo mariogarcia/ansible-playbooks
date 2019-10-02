@@ -1,5 +1,14 @@
-# HOSTNAMES
-# It's advisable to add an entry on /etc/hosts
+# CONSUL INSTALLATION
+# -------------------
+# This Ansible tasks install a Consul cluster
+# of 2 nodes (leader/follower).
+#
+# - sets hosts names. This is required as Consul
+#   checks hostnames aren't the same
+# - downloads Consul
+# - installs Consul as a service
+
+# sets hostnames
 - name: hostname leader
   hostname:
     name: consuln1
@@ -20,7 +29,7 @@
   with_items:
     - "{{ groups['all'] }}"
 
-# INSTALL CONSUL
+# downloads Consul
 - name: download
   get_url:
     url: https://releases.hashicorp.com/consul/1.6.1/consul_1.6.1_linux_amd64.zip
@@ -47,6 +56,7 @@
     dest: /tmp/
     remote_src: yes
 
+# installs Consul as a service
 - name: copy binary to /usr/local/bin
   copy:
     src: /tmp/consul
