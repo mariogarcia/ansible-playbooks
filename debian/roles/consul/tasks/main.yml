@@ -1,3 +1,26 @@
+# HOSTNAMES
+# It's advisable to add an entry on /etc/hosts
+- name: hostname leader
+  hostname:
+    name: consuln1
+  when: consul_role == "leader"
+
+- name: hostname follower
+  hostname:
+    name: consuln2
+  when: consul_role == "follower"
+
+- name: Add the inventory into /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{item}} {{ hostvars[item]['hostname'] }}"
+    state: present
+  when: hostvars[item]['ansible_facts']['hostname'] is defined
+  with_items:
+    - "{{ groups['all'] }}"
+
+# INSTALL CONSUL
 - name: download
   get_url:
     url: https://releases.hashicorp.com/consul/1.6.1/consul_1.6.1_linux_amd64.zip
